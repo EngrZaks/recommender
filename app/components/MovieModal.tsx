@@ -79,7 +79,7 @@ const MovieModal = ({ movie, onClose }: MovieModalProps) => {
             <div className="sticky top-0 z-50 bg-white py-2 px-4 mb-4 flex justify-between items-center">
               <h2 className="text-xl font-bold">{movie?.title}</h2>
               <button
-                className="text-gray-500 hover:text-gray-800"
+                className="text-black text-lg hover:text-gray-800"
                 onClick={onClose}
               >
                 Close
