@@ -16,6 +16,7 @@ const MovieModal = ({ movie, onClose }: MovieModalProps) => {
       image: string;
     }[]
   >([]);
+  const [loading, setloading] = useState(false);
 
   const fetchMovieDetails = async (movieId: number) => {
     try {
@@ -35,6 +36,7 @@ const MovieModal = ({ movie, onClose }: MovieModalProps) => {
         setRecommendedMovies([]);
         return;
       }
+      setloading(true);
       const recommendedMovies = await Promise.all(
         recommendations.map(async (recommendation) => {
           const details = await fetchMovieDetails(recommendation.movieId);
@@ -45,12 +47,13 @@ const MovieModal = ({ movie, onClose }: MovieModalProps) => {
         })
       );
       setRecommendedMovies(recommendedMovies);
-    //   console.log(recommendations);
+      setloading(false);
+      //   console.log(recommendations);
     };
 
     fetchRecommendedMovies();
   }, [movie?.recommendations]);
-
+  if (loading) return <h5>Fetching Recommendations...</h5>;
   return (
     <>
       <div className="fixed h-full w-full z-40 bg-black opacity-50"></div>
