@@ -23,7 +23,7 @@ const SearchPage = async ({ params }: { params: { query: string } }) => {
       <div className="container mx-auto px-1 md:px-20 py-10">
         <h1 className="text-2xl font-bold mb-6">
           <BackButton /> Search Results for &quot;
-          {params.query}&quot;
+          {decodeURIComponent(params.query)}&quot;
         </h1>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {searchResults.map((movie) => (
