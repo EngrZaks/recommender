@@ -5,9 +5,7 @@ import BackButton from "@/app/components/BackButton";
 import { MovieType } from "@/types/movies";
 
 async function getData(query: string) {
-  const response = await fetch(
-    `http://localhost:5000/search?query=${encodeURIComponent(query)}`
-  );
+  const response = await fetch(`http://localhost:5000/search?query=${query}`);
   if (!response.ok) {
     throw new Error("failed to fetch search results");
   }
