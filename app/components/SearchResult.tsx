@@ -14,7 +14,21 @@ const SearchResult = ({ movie }: SearchResultProps) => {
   const [recommendedMovies, setRecommendedMovies] = useState<MovieType | null>(
     null
   );
-
+  const [movieDetails, setmovieDetails] = useState<MovieType>();
+  const [movieLoading, setMovieLoading] = useState(false);
+  const fetchMovieDetails = async (movieId: number) => {
+    setMovieLoading(true);
+    try {
+      const response = await fetch(`http://localhost:5000/movies/${movieId}`);
+      const data = await response.json();
+      setMovieLoading(false);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch movie details:", error);
+      setMovieLoading(false);
+      return null;
+    }
+  };
   const fetchRecommendations = async (movieId: number) => {
     try {
       const response = await fetch(
@@ -27,6 +41,14 @@ const SearchResult = ({ movie }: SearchResultProps) => {
       return [];
     }
   };
+
+  useEffect(() => {
+    const fetcMovies = async () => {
+      const moviedetails = await fetchMovieDetails(movie.movieId);
+      setmovieDetails(moviedetails);
+    };
+    fetcMovies();
+  }, [movie.movieId]);
 
   const handleMovieClick = async () => {
     setLoading(true);
@@ -53,7 +75,7 @@ const SearchResult = ({ movie }: SearchResultProps) => {
         onClick={handleMovieClick}
       >
         <Image
-          src={movie.image || "/placeholder.jpg"}
+          src={movieDetails?.image || "/placeholder.jpg"}
           alt={movie.title}
           height={1000}
           width={750}
