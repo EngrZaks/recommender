@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import MovieModal from "./MovieModal";
 import { MovieType } from "@/types/movies";
-
+import axios from "@/configs/requests";
 interface SearchResultProps {
   movie: MovieType;
 }
@@ -19,8 +19,8 @@ const SearchResult = ({ movie }: SearchResultProps) => {
   const fetchMovieDetails = async (movieId: number) => {
     setMovieLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/movies/${movieId}`);
-      const data = await response.json();
+      const response = await axios.get(`/movies/${movieId}`);
+      const data = await response.data;
       setMovieLoading(false);
       return data;
     } catch (error) {
@@ -31,10 +31,8 @@ const SearchResult = ({ movie }: SearchResultProps) => {
   };
   const fetchRecommendations = async (movieId: number) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/recommendations/${movieId}`
-      );
-      const data = await response.json();
+      const response = await axios.get(`/recommendations/${movieId}`);
+      const data = await response.data;
       return data;
     } catch (error) {
       console.error("Failed to fetch recommendations:", error);

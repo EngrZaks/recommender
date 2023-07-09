@@ -1,4 +1,4 @@
 import axios from "axios";
 
-const baseURL = process.env.BASE_URL;
-export default axios.create({ baseURL });
+const base = process.env.NEXT_PUBLIC_BASE_URL;
+export default axios.create({ baseURL: base, timeout: 10000 });

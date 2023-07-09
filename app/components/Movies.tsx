@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import LoadingMoviesSection from "./Loading";
 import MovieModal from "./MovieModal";
 import { MovieType } from "@/types/movies";
+import axios from "../../configs/requests";
+console.log("BASE URL", process.env.NEXT_PUBLIC_BASE_URL);
 
 const RandomMoviesSection = () => {
   const [randomMovies, setRandomMovies] = useState<MovieType[]>([]);
@@ -29,8 +31,8 @@ const RandomMoviesSection = () => {
   const fetchRandomMovies = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/random_movies");
-      const data = await response.json();
+      const response = await axios.get("/random_movies");
+      const data = await response.data;
       setRandomMovies(data);
       setLoading(false);
     } catch (error) {
@@ -41,10 +43,8 @@ const RandomMoviesSection = () => {
 
   const fetchRecommendations = async (movieId: number) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/recommendations/${movieId}`
-      );
-      const data = await response.json();
+      const response = await axios.get(`/recommendations/${movieId}`);
+      const data = await response.data;
       return data;
     } catch (error) {
       console.error("Failed to fetch recommendations:", error);

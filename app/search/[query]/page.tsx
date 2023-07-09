@@ -3,13 +3,14 @@ import SearchResult from "@/app/components/SearchResult";
 import LoadingMoviesSection from "@/app/components/Loading";
 import BackButton from "@/app/components/BackButton";
 import { MovieType } from "@/types/movies";
+import axios from "@/configs/requests";
 
 async function getData(query: string) {
-  const response = await fetch(`http://localhost:5000/search?query=${query}`);
-  if (!response.ok) {
-    throw new Error("failed to fetch search results");
-  }
-  return response.json();
+  const response = await axios.get(`/search?query=${query}`);
+  //     if (!response.ok) {
+  //     throw new Error("failed to fetch search results");
+  //   }
+  return response.data;
 }
 
 const SearchPage = async ({ params }: { params: { query: string } }) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { MovieType } from "@/types/movies";
-
+import axios from "@/configs/requests";
 interface MovieModalProps {
   movie: MovieType | null;
   onClose: () => void;
@@ -20,8 +20,8 @@ const MovieModal = ({ movie, onClose }: MovieModalProps) => {
 
   const fetchMovieDetails = async (movieId: number) => {
     try {
-      const response = await fetch(`http://localhost:5000/movies/${movieId}`);
-      const data = await response.json();
+      const response = await axios.get(`/movies/${movieId}`);
+      const data = await response.data;
       return data;
     } catch (error) {
       console.error("Failed to fetch movie details:", error);
