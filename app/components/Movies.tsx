@@ -77,7 +77,7 @@ const RandomMoviesSection = () => {
 
   return (
     <>
-      <section className="p-6 md:p-12 py-12 bg-gray-100 w-full">
+      <section className="p-6 md:py-12 md:px-20 bg-gray-100 w-full">
         <div className="container mx-auto px-1 md:px-20 py-10">
           <h2 className="text-2xl font-bold mb-6">
             Which of these movies do you like?
