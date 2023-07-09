@@ -1,54 +1,24 @@
-import React from "react";
+"use client";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import LoadingMoviesSection from "./Loading";
+import MovieModal from "./MovieModal";
+import { MovieType } from "@/types/movies";
 
 const RandomMoviesSection = () => {
-  const movies = [
-    {
-      movieId: 1,
-      title: "Toy Story (1995)",
-      genres: "Adventure|Animation|Children|Comedy|Fantasy",
-      image: "",
-    },
-    {
-      movieId: 2,
-      title: "Jumanji (1995)",
-      genres: "Adventure|Children|Fantasy",
-      image: "",
-    },
-    {
-      movieId: 3,
-      title: "Grumpier Old Men (1995)",
-      genres: "Comedy|Romance",
-      image: "",
-    },
-    {
-      movieId: 4,
-      title: "Waiting to Exhale (1995)",
-      genres: "Comedy|Drama|Romance",
-      image: "",
-    },
-    {
-      movieId: 5,
-      title: "Father of the Bride Part II (1995)",
-      image: "",
-      genres: "Comedy",
-    },
-    {
-      movieId: 6,
-      title: "Heat (1995)",
-      genres: "Action|Crime|Thriller",
-      image: "",
-    },
-  ];
+  const [randomMovies, setRandomMovies] = useState<MovieType[]>([]);
+  const [selectedMovie, setSelectedMovie] = useState<MovieType | null>(null);
+  const [Loading, setLoading] = useState(false);
 
   const colors = [
-    "bg-blue-200",
-    "bg-red-200",
-    "bg-yellow-200",
-    "bg-green-200",
-    "bg-pink-200",
-    "bg-purple-200",
-    "bg-orange-200",
-    "bg-stone-200",
+    "bg-blue-100",
+    "bg-red-100",
+    "bg-yellow-100",
+    "bg-green-100",
+    "bg-pink-100",
+    "bg-purple-100",
+    "bg-orange-100",
+    "bg-stone-100",
   ];
 
   const getRandomColor = () => {
@@ -56,32 +26,99 @@ const RandomMoviesSection = () => {
     return colors[randomIndex];
   };
 
+  const fetchRandomMovies = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/random_movies");
+      const data = await response.json();
+      setRandomMovies(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch random movies:", error);
+      setLoading(false);
+    }
+  };
+
+  const fetchRecommendations = async (movieId: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/recommendations/${movieId}`
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch recommendations:", error);
+      return [];
+    }
+  };
+
+  const handleMovieClick = async (movie: MovieType) => {
+    setLoading(true);
+    const recommendations = await fetchRecommendations(movie.movieId);
+    setLoading(false);
+    setSelectedMovie({ ...movie, recommendations });
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMovie(null);
+  };
+
+  useEffect(() => {
+    fetchRandomMovies();
+  }, []);
+
+  const handleShuffleClick = () => {
+    fetchRandomMovies();
+  };
+
+  if (Loading) {
+    return <LoadingMoviesSection />;
+  }
+
   return (
-    <section className="py-10">
-      <div className="container mx-auto px-6">
-        <h2 className="text-2xl font-bold mb-6">
-          Which of these movies do you like?
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {movies.map((movie) => (
-            <div
-              key={movie.movieId}
-              className={`rounded overflow-hidden shadow-md hover:bg-gray-700 ${getRandomColor()}`}
-            >
-              <img
-                src={movie.image || "placeholder.jpg"}
-                alt={movie.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-bold mb-2">{movie.title}</h3>
-                <p className="text-sm">{movie.genres}</p>
-              </div>
-            </div>
-          ))}
+    <>
+      <section className="p-6 md:p-12 py-12 bg-gray-100 w-full">
+        <div className="container mx-auto px-1 md:px-20 py-10">
+          <h2 className="text-2xl font-bold mb-6">
+            Which of these movies do you like?
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {randomMovies.map((movie, i) => {
+              const randomColor = getRandomColor();
+
+              return (
+                <div
+                  key={i}
+                  className={`rounded-md overflow-hidden shadow-md ${randomColor} hover:opacity-75 transition-all cursor-pointer duration-200`}
+                  onClick={() => handleMovieClick(movie)}
+                >
+                  <Image
+                    src={movie.image || "/placeholder.jpg"}
+                    alt={movie.title}
+                    height={1000}
+                    width={750}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4">
+                    <h3 className="text-lg font-bold mb-2">{movie.title}</h3>
+                    <p className="text-sm">{movie.year}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <button
+            className="mt-6 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+            onClick={handleShuffleClick}
+          >
+            Shuffle Movies
+          </button>
         </div>
-      </div>
-    </section>
+      </section>
+      {selectedMovie && (
+        <MovieModal movie={selectedMovie} onClose={handleCloseModal} />
+      )}
+    </>
   );
 };
 
