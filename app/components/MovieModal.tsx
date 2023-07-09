@@ -56,8 +56,11 @@ const MovieModal = ({ movie, onClose }: MovieModalProps) => {
   if (loading) return <h5>Fetching Recommendations...</h5>;
   return (
     <>
-      <div className="fixed h-full w-full z-40 bg-black opacity-50"></div>
-      <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div
+        className="fixed z-40 bg-black opacity-50"
+        style={{ width: "100vw", height: "100vh" }}
+      ></div>
+      <div className="fixed inset-0 flex items-center justify-center z-50 px-5">
         <div className="bg-white w-full max-w-4xl h-5/6 rounded-md shadow-lg overflow-auto relative">
           <div className="p-4">
             <div className="sticky top-0 z-50 bg-white py-2 px-4 mb-4 flex justify-between items-center">
