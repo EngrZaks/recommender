@@ -53,7 +53,20 @@ const MovieModal = ({ movie, onClose }: MovieModalProps) => {
 
     fetchRecommendedMovies();
   }, [movie?.recommendations]);
-  if (loading) return <h5>Fetching Recommendations...</h5>;
+  if (loading)
+    return (
+      <>
+        <div
+          className="fixed z-40 bg-black opacity-50"
+          style={{ width: "100vw", height: "100vh" }}
+        ></div>
+        <div className="fixed inset-0  z-50 px-5">
+          <div className="bg-white w-full max-w-4xl h-5/6 rounded-md shadow-lg overflow-auto flex items-center justify-center">
+            <h3 className="text-lg">Fetching Recommendations...</h3>
+          </div>{" "}
+        </div>{" "}
+      </>
+    );
   return (
     <>
       <div
@@ -75,7 +88,7 @@ const MovieModal = ({ movie, onClose }: MovieModalProps) => {
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2 md:col-span-1">
                 <div className="sticky top-14 z-50 hidden md:block">
-                  <div className=" w-full h-60 relative object-cover">
+                  <div className=" w-full h-80 relative object-cover">
                     <Image
                       src={movie?.image || "/placeholder.jpg"}
                       alt={movie?.title as string}
